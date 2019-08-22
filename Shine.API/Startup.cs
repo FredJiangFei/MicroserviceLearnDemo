@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Consul;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -37,11 +38,37 @@ namespace Shine.API
             {
                 app.UseHsts();
             }
-            app.UseCors(x => x.WithOrigins("http://localhost:4200","http://localhost:8100")
+            app.UseCors(x => x.WithOrigins("http://localhost:4200")
                            .AllowAnyMethod()
                            .AllowAnyHeader()
                            .AllowCredentials());
             app.UseMvc();
+
+
+            String ip = Configuration["ip"];
+            Int32 port = Int32.Parse(Configuration["port"]);
+
+            ConsulClient client = new ConsulClient(ConfigurationOverview);
+            Task<WriteResult> result = client.Agent.ServiceRegister(new AgentServiceRegistration()
+            {
+                ID = "apiservice1" + Guid.NewGuid(),
+                Name = "apiservice1",
+                Address = ip,
+                Port = port,
+                Check = new AgentServiceCheck()
+                {
+                    DeregisterCriticalServiceAfter = TimeSpan.FromSeconds(5),
+                    Interval = TimeSpan.FromSeconds(10),
+                    HTTP = $"http://{ip}:{port}/api/health",
+                    Timeout = TimeSpan.FromSeconds(5)
+                }
+            });
+        }
+
+        private static void ConfigurationOverview(ConsulClientConfiguration obj)
+        {
+            obj.Address = new Uri("http://127.0.0.1:8500");
+            obj.Datacenter = "dc1";
         }
     }
 }

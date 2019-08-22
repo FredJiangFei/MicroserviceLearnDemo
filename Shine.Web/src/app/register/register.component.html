@@ -1,0 +1,59 @@
+<form [formGroup]="registerForm" (ngSubmit)="register(registerForm.value)" novalidate>
+
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Register</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-form-field class="full-width">
+        <mat-label>User name  <span *ngIf="username.pending">Checking.....</span></mat-label>
+        <input matInput type="text" formControlName="username">
+
+        <mat-error [hidden]="!username.errors?.nameExist">
+          Username is exist
+        </mat-error>
+      </mat-form-field>
+      <ng-container formGroupName="passwordGroup">
+        <mat-form-field class="full-width">
+          <mat-label>Password</mat-label>
+          <input matInput type="password" formControlName="password">
+
+          <mat-error *ngIf="password.touched && password.invalid && password.hasError('required')">
+            Password is required
+          </mat-error>
+          <mat-error *ngIf="password.touched && password.invalid && password.hasError('minlength')">
+            Password should minimun {{password.getError('minlength').requiredLength}}
+          </mat-error>
+          <mat-error *ngIf="password.touched && password.invalid && password.hasError('passwordInvalid')">
+            Password must contain at least one number and at least one lowercase letter
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field class="full-width">
+          <mat-label>Confirm Password</mat-label>
+          <input matInput type="password" formControlName="confirmpassword" [errorStateMatcher]="mismatchMatcher">
+          <mat-error *ngIf="passwordGroup.hasError('mismatch')">
+              Password is mismatch
+          </mat-error>
+        </mat-form-field>
+      </ng-container>
+      
+      <mat-form-field  class="full-width">
+          <mat-label>Birthday</mat-label>
+          <input matInput [matDatepicker]="picker" formControlName="birthday" [readonly]="true">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+
+        <app-avatar-select formControlName="avatar"></app-avatar-select>
+    </mat-card-content>
+
+    <mat-card-actions [align]="'end'">
+      <button mat-flat-button [disabled]="registerForm.invalid">Register</button>
+    </mat-card-actions>
+
+    <mat-card-footer>
+      <a [routerLink]="['/login']">Login</a>
+    </mat-card-footer>
+  </mat-card>
+</form>

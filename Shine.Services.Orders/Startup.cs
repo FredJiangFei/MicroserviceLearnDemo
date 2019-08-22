@@ -11,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
-namespace Shine.API
+namespace Shine.Services.Orders
 {
     public class Startup
     {
@@ -22,11 +22,13 @@ namespace Shine.API
 
         public IConfiguration Configuration { get; }
 
+        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
@@ -37,10 +39,8 @@ namespace Shine.API
             {
                 app.UseHsts();
             }
-            app.UseCors(x => x.WithOrigins("http://localhost:4200","http://localhost:8100")
-                           .AllowAnyMethod()
-                           .AllowAnyHeader()
-                           .AllowCredentials());
+
+            app.UseHttpsRedirection();
             app.UseMvc();
         }
     }

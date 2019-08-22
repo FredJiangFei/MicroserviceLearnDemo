@@ -1,4 +1,11 @@
-import { Directive, Input, OnChanges, SimpleChanges, ElementRef, Renderer2 } from '@angular/core';
+import {
+  Directive,
+  Input,
+  OnChanges,
+  SimpleChanges,
+  ElementRef,
+  Renderer2
+} from '@angular/core';
 import { Spinner } from 'spin.js';
 
 @Directive({
@@ -6,14 +13,12 @@ import { Spinner } from 'spin.js';
 })
 export class SpinnerDirective implements OnChanges {
   @Input() appSpinner: boolean;
-  spinner: Spinner =  new Spinner({
-     scale: 0.7,
-     color: '#fff'
+  spinner: Spinner = new Spinner({
+    scale: 0.7,
+    color: '#fff'
   });
 
-  constructor(private elementRef: ElementRef, private renderer: Renderer2) {
-
-  }
+  constructor(private elementRef: ElementRef, private renderer: Renderer2) {}
 
   ngOnChanges(changes: SimpleChanges) {
     const loading = changes.appSpinner.currentValue;
@@ -30,4 +35,3 @@ export class SpinnerDirective implements OnChanges {
     this.elementRef.nativeElement.disabled = loading;
   }
 }
-

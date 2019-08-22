@@ -1,13 +1,11 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { OrderListComponent } from './order-list/order-list.component';
+import { OrderComponent } from './order.component';
 import { OrderRoutingModule } from './order-routing.module';
+import { ShareModule } from '../_shared/share.module';
 
 @NgModule({
-  declarations: [OrderListComponent],
-  imports: [
-    CommonModule,
-    OrderRoutingModule
-  ]
+  declarations: [OrderComponent],
+  imports: [CommonModule, ShareModule, OrderRoutingModule]
 })
-export class OrderModule { }
+export class OrderModule {}

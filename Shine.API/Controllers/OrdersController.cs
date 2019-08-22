@@ -1,4 +1,6 @@
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Shine.API.Models;
 
 namespace Shine.API.Controllers
 {
@@ -7,9 +9,9 @@ namespace Shine.API.Controllers
     public class OrdersController : ControllerBase
     {
         [HttpPost]
-        public void Post()
+        public IActionResult Post(OrderRequest request)
         {
-            var name ="fred";
+            return Ok();
         }
     }
 }

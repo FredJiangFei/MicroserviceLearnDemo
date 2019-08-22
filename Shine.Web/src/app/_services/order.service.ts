@@ -9,7 +9,7 @@ export class OrderService {
 
   constructor(private http: HttpClient) { }
 
-  postOrder() {
-    return this.http.post(`${environment.baseUrl}/orders`,{});
+  postOrder(orderRequest: any) {
+    return this.http.post(`${environment.baseUrl}/orders`, orderRequest);
   }
 }

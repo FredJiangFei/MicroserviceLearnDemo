@@ -1,0 +1,12 @@
+Setting up Consul
+
+consul agent -dev
+http://127.0.0.1:8500
+
+Registering a service
+
+
+Deregistering the service
+
+
+Consuming the registrations

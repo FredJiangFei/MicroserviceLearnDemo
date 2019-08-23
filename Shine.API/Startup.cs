@@ -1,16 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Consul;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Hosting.Server.Features;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Shine.API.Service;
 
 namespace Shine.API
 {
@@ -23,12 +23,34 @@ namespace Shine.API
 
         public IConfiguration Configuration { get; }
 
+        // https://cecilphillip.com/using-consul-for-service-discovery-with-asp-net-core/
+        // http://michaco.net/blog/ServiceDiscoveryAndHealthChecksInAspNetCoreWithConsul
+        // https://www.c-sharpcorner.com/article/dynamic-asp-net-core-configurations-with-consul-kv/
+        // https://github.com/PlayFab/consuldotnet
+
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            services.Configure<ServiceDisvoveryOptions>(Configuration.GetSection("ServiceDiscovery"));
+            services.AddSingleton<IConsulClient, ConsulClient>(p => new ConsulClient(cfg =>
+            {
+                var serviceConfiguration = p.GetRequiredService<IOptions<ServiceDisvoveryOptions>>().Value;
+
+                if (!string.IsNullOrEmpty(serviceConfiguration.Consul.HttpEndpoint))
+                {
+                    cfg.Address = new Uri(serviceConfiguration.Consul.HttpEndpoint);
+                }
+            }));
         }
 
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(
+            IApplicationBuilder app,
+            IHostingEnvironment env,
+            IApplicationLifetime appLife,
+            ILoggerFactory loggerFactory,
+            IOptions<ServiceDisvoveryOptions> serviceOptions,
+            IConsulClient consul)
         {
             if (env.IsDevelopment())
             {
@@ -45,30 +67,39 @@ namespace Shine.API
             app.UseMvc();
 
 
-            String ip = Configuration["ip"];
-            Int32 port = Int32.Parse(Configuration["port"]);
+            var features = app.Properties["server.Features"] as FeatureCollection;
+            var addresses = features.Get<IServerAddressesFeature>()
+                .Addresses
+                .Select(p => new Uri(p));
 
-            ConsulClient client = new ConsulClient(ConfigurationOverview);
-            Task<WriteResult> result = client.Agent.ServiceRegister(new AgentServiceRegistration()
+            foreach (var address in addresses)
             {
-                ID = "apiservice1" + Guid.NewGuid(),
-                Name = "apiservice1",
-                Address = ip,
-                Port = port,
-                Check = new AgentServiceCheck()
+                var serviceId = $"{serviceOptions.Value.ServiceName}_{address.Host}:{address.Port}";
+
+                var httpCheck = new AgentServiceCheck()
                 {
                     DeregisterCriticalServiceAfter = TimeSpan.FromSeconds(5),
                     Interval = TimeSpan.FromSeconds(10),
-                    HTTP = $"http://{ip}:{port}/api/health",
+                    HTTP = new Uri(address, "api/health").OriginalString,
                     Timeout = TimeSpan.FromSeconds(5)
-                }
-            });
-        }
+                };
 
-        private static void ConfigurationOverview(ConsulClientConfiguration obj)
-        {
-            obj.Address = new Uri("http://127.0.0.1:8500");
-            obj.Datacenter = "dc1";
+                var registration = new AgentServiceRegistration()
+                {
+                    Checks = new[] { httpCheck },
+                    Address = address.Host,
+                    ID = serviceId,
+                    Name = serviceOptions.Value.ServiceName,
+                    Port = address.Port
+                };
+
+                consul.Agent.ServiceRegister(registration).GetAwaiter().GetResult();
+
+                appLife.ApplicationStopping.Register(() =>
+                {
+                    consul.Agent.ServiceDeregister(serviceId).GetAwaiter().GetResult();
+                });
+            }
         }
     }
 }

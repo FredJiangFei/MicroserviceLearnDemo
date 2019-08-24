@@ -1,8 +1,6 @@
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Shine.API.Models;
 
-namespace Shine.API.Controllers
+namespace Shine.Services.Orders.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

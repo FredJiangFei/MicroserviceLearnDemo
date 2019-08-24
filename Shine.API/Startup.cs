@@ -31,26 +31,9 @@ namespace Shine.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-
-            services.Configure<ServiceDisvoveryOptions>(Configuration.GetSection("ServiceDiscovery"));
-            services.AddSingleton<IConsulClient, ConsulClient>(p => new ConsulClient(cfg =>
-            {
-                var serviceConfiguration = p.GetRequiredService<IOptions<ServiceDisvoveryOptions>>().Value;
-
-                if (!string.IsNullOrEmpty(serviceConfiguration.Consul.HttpEndpoint))
-                {
-                    cfg.Address = new Uri(serviceConfiguration.Consul.HttpEndpoint);
-                }
-            }));
         }
 
-        public void Configure(
-            IApplicationBuilder app,
-            IHostingEnvironment env,
-            IApplicationLifetime appLife,
-            ILoggerFactory loggerFactory,
-            IOptions<ServiceDisvoveryOptions> serviceOptions,
-            IConsulClient consul)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -65,41 +48,6 @@ namespace Shine.API
                            .AllowAnyHeader()
                            .AllowCredentials());
             app.UseMvc();
-
-
-            var features = app.Properties["server.Features"] as FeatureCollection;
-            var addresses = features.Get<IServerAddressesFeature>()
-                .Addresses
-                .Select(p => new Uri(p));
-
-            foreach (var address in addresses)
-            {
-                var serviceId = $"{serviceOptions.Value.ServiceName}_{address.Host}:{address.Port}";
-
-                var httpCheck = new AgentServiceCheck()
-                {
-                    DeregisterCriticalServiceAfter = TimeSpan.FromSeconds(5),
-                    Interval = TimeSpan.FromSeconds(10),
-                    HTTP = new Uri(address, "api/health").OriginalString,
-                    Timeout = TimeSpan.FromSeconds(5)
-                };
-
-                var registration = new AgentServiceRegistration()
-                {
-                    Checks = new[] { httpCheck },
-                    Address = address.Host,
-                    ID = serviceId,
-                    Name = serviceOptions.Value.ServiceName,
-                    Port = address.Port
-                };
-
-                consul.Agent.ServiceRegister(registration).GetAwaiter().GetResult();
-
-                appLife.ApplicationStopping.Register(() =>
-                {
-                    consul.Agent.ServiceDeregister(serviceId).GetAwaiter().GetResult();
-                });
-            }
         }
     }
 }

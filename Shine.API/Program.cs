@@ -8,7 +8,6 @@ namespace Shine.API
         public static void Main(string[] args)
         {
             CreateWebHostBuilder(args)
-            .UseUrls($"http://127.0.0.1:8080")
             .Build().Run();
         }
 

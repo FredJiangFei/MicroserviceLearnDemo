@@ -7,9 +7,6 @@ namespace Shine.Services.Orders.Controllers
     public class HealthController : ControllerBase
     {
         [HttpGet]
-        public IActionResult Get()
-        {
-            return Ok("ok");
-        }
+        public IActionResult Get() => Ok("health check ok");
     }
 }

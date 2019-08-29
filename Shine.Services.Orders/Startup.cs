@@ -80,7 +80,8 @@ namespace Shine.Services.Orders
                     Address = address.Host,
                     ID = serviceId,
                     Name = serviceOptions.Value.ServiceName,
-                    Port = address.Port
+                    Port = address.Port,
+                    Tags = new string[] { "Order" }
                 };
 
                 consul.Agent.ServiceRegister(registration).GetAwaiter().GetResult();

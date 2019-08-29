@@ -1,5 +1,7 @@
 using System;
-using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
 using Consul;
 using Microsoft.AspNetCore.Mvc;
 using Shine.API.Models;
@@ -12,9 +14,17 @@ namespace Shine.API.Controllers
     {
 
         [HttpGet]
-        public IActionResult GetOrders()
+        public async Task<IActionResult> GetOrders()
         {
-            return Ok();
+            var consulClient = new ConsulClient(c => c.Address = new Uri("http://127.0.0.1:8500"));
+            var services = consulClient.Agent.Services().Result.Response;
+            var orderApiService = services.FirstOrDefault(x => x.Value.Tags.Any(t => t == "Order"));
+            using (var client = new HttpClient())
+            {
+                var serviceResult = await client.GetStringAsync(
+                    $"http://{orderApiService.Value.Address}:{orderApiService.Value.Port}/api/orders");
+                return Ok(serviceResult);
+            }
         }
 
         [HttpPost]

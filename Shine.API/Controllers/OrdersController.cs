@@ -1,9 +1,6 @@
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Shine.API.Models;
-using System.IO;
-using Google.Protobuf;
-using Grpc.Core;
+using Shine.API.Services;
 
 namespace Shine.API.Controllers
 {
@@ -11,12 +8,11 @@ namespace Shine.API.Controllers
     [ApiController]
     public class OrdersController : ControllerBase
     {
-
         [HttpGet]
-        public async Task<IActionResult> GetOrders()
+        public IActionResult GetOrders()
         {
-
-            return Ok();
+            GetMsgSumReply msgSum = MsgServiceClient.GetSum(10, 2);
+            return Ok(msgSum.Sum);
             // var consulClient = new ConsulClient(c => c.Address = new Uri("http://127.0.0.1:8500"));
             // var services = consulClient.Agent.Services().Result.Response;
             // var orderApiService = services.FirstOrDefault(x => x.Value.Tags.Any(t => t == "Order"));

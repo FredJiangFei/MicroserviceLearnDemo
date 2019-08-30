@@ -57,40 +57,40 @@ namespace Shine.Services.Orders
             app.UseHttpsRedirection();
             app.UseMvc();
 
-            // var features = app.Properties["server.Features"] as FeatureCollection;
-            // var addresses = features.Get<IServerAddressesFeature>()
-            //     .Addresses
-            //     .Select(p => new Uri(p));
+            var features = app.Properties["server.Features"] as FeatureCollection;
+            var addresses = features.Get<IServerAddressesFeature>()
+                .Addresses
+                .Select(p => new Uri(p));
 
-            // foreach (var address in addresses)
-            // {
-            //     var serviceId = $"{serviceOptions.Value.ServiceName}_{address.Host}:{address.Port}";
+            foreach (var address in addresses)
+            {
+                var serviceId = $"{serviceOptions.Value.ServiceName}_{address.Host}:{address.Port}";
 
-            //     var httpCheck = new AgentServiceCheck()
-            //     {
-            //         DeregisterCriticalServiceAfter = TimeSpan.FromSeconds(5),
-            //         Interval = TimeSpan.FromSeconds(10),
-            //         HTTP = new Uri(address, "api/health").OriginalString,
-            //         Timeout = TimeSpan.FromSeconds(5)
-            //     };
+                var httpCheck = new AgentServiceCheck()
+                {
+                    DeregisterCriticalServiceAfter = TimeSpan.FromSeconds(5),
+                    Interval = TimeSpan.FromSeconds(10),
+                    HTTP = new Uri(address, "api/health").OriginalString,
+                    Timeout = TimeSpan.FromSeconds(5)
+                };
 
-            //     var registration = new AgentServiceRegistration()
-            //     {
-            //         Checks = new[] { httpCheck },
-            //         Address = address.Host,
-            //         ID = serviceId,
-            //         Name = serviceOptions.Value.ServiceName,
-            //         Port = address.Port,
-            //         Tags = new string[] { "Order" }
-            //     };
+                var registration = new AgentServiceRegistration()
+                {
+                    Checks = new[] { httpCheck },
+                    Address = address.Host,
+                    ID = serviceId,
+                    Name = serviceOptions.Value.ServiceName,
+                    Port = address.Port,
+                    Tags = new string[] { "Order" }
+                };
 
-            //     consul.Agent.ServiceRegister(registration).GetAwaiter().GetResult();
+                consul.Agent.ServiceRegister(registration).GetAwaiter().GetResult();
 
-            //     appLife.ApplicationStopping.Register(() =>
-            //     {
-            //         consul.Agent.ServiceDeregister(serviceId).GetAwaiter().GetResult();
-            //     });
-            // }
+                appLife.ApplicationStopping.Register(() =>
+                {
+                    consul.Agent.ServiceDeregister(serviceId).GetAwaiter().GetResult();
+                });
+            }
         }
     }
 }

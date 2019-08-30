@@ -1,5 +1,6 @@
 Setting up Consul
 
+mac: sap consul /usr/local/bin/
 consul agent -dev
 http://127.0.0.1:8500
 

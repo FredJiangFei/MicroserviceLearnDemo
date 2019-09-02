@@ -14,7 +14,7 @@ namespace MLD.Service.Order
         {
             _server = new Server
             {
-                Services = { MsgService.BindService(new MsgServiceImpl()) },
+                Services = { OrderService.BindService(new OrderServiceImpl()) },
                 Ports = { new ServerPort("localhost", 40001, ServerCredentials.Insecure) }
             };
             _server.Start();

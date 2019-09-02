@@ -1,0 +1,19 @@
+﻿syntax = "proto3";
+service OrderService{
+	rpc GetOrder(GetOrderRequest) returns (GetOrderReply){}
+	rpc GetOrders(GetOrdersRequest) returns (GetOrdersReply){}
+}
+message GetOrderRequest {
+	int32 Id = 1;
+}
+
+message GetOrdersRequest {}
+
+message GetOrderReply {
+	int32 Id = 1;
+	int32 Amount = 2;
+}
+
+message GetOrdersReply {
+	repeated GetOrderReply Orders = 1;
+}

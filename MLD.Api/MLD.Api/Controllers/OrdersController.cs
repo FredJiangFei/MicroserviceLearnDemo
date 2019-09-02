@@ -7,11 +7,18 @@ namespace MLD.Api.Controllers
     [ApiController]
     public class OrdersController : ControllerBase
     {
+        [HttpGet("{id}")]
+        public IActionResult GetOrder(int id)
+        {
+            var order = OrderServiceClient.GetOrder(id);
+            return Ok(order);
+        }
+
         [HttpGet]
         public IActionResult GetOrders()
         {
-            GetMsgSumReply msgSum = MsgServiceClient.GetSum(10, 2);
-            return Ok(msgSum.Sum);
+            var orders = OrderServiceClient.GetOrders();
+            return Ok(orders);
         }
     }
 }

@@ -1,6 +1,10 @@
+<h1>Orders</h1>
 
-<h1>Order</h1>
+<ul>
+  <li *ngFor="let o of orders">
+    Amount: {{ o.amount }}
+    <button mat-flat-button (click)="getOrder(o.id)">Select</button>
+  </li>
+</ul>
 
-<button mat-flat-button (click)="submitOrder()">
-  SubmitOrder
-</button>
+Order select: {{ order.amount }}

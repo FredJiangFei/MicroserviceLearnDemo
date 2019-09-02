@@ -16,7 +16,7 @@ namespace MLD.Api.Services
         {
             return Client.GetOrder(new GetOrderRequest
             {
-               Id = 1
+                Id = id
             });
         }
 

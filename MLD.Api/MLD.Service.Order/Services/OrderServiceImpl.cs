@@ -8,20 +8,34 @@ namespace MLD.Service.Order.Services
     {
         public override async Task<GetOrderReply> GetOrder(GetOrderRequest request, ServerCallContext context)
         {
-            var result = new GetOrderReply
-            {
-                Id = 1,
-                Amount = 123
-            };
-            return result;
+            var orders = GetOrders();
+            var order = orders.Find(x => x.Id == request.Id);
+            return order;
         }
 
         public override async Task<GetOrdersReply> GetOrders(GetOrdersRequest request, ServerCallContext context)
         {
-            var result = new GetOrdersReply
-            {
-            };
+            var orders = GetOrders();
+            var result = new GetOrdersReply();
+            result.Orders.AddRange(orders);
             return result;
+        }
+
+        private List<GetOrderReply> GetOrders()
+        {
+            return new List<GetOrderReply>
+            {
+                new GetOrderReply
+                {
+                    Id = 1,
+                    Amount = 123
+                },
+                new GetOrderReply
+                {
+                    Id = 2,
+                    Amount = 456
+                }
+            };
         }
     }
 }

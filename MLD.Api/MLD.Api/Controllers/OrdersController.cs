@@ -17,8 +17,8 @@ namespace MLD.Api.Controllers
         [HttpGet]
         public IActionResult GetOrders()
         {
-            var orders = OrderServiceClient.GetOrders();
-            return Ok(orders);
+            var ordersReply = OrderServiceClient.GetOrders();
+            return Ok(ordersReply.Orders);
         }
     }
 }

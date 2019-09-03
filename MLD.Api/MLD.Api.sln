@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MLD.Api", "MLD.Api\MLD.Api.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MLD.Service.Order", "MLD.Service.Order\MLD.Service.Order.csproj", "{FBAF9896-215F-4485-BCCE-84055F49F9DC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MLD.Service.Product", "MLD.Service.Product\MLD.Service.Product.csproj", "{1D3134F5-BAFC-4DC4-AE27-0AFB5A92FE08}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{FBAF9896-215F-4485-BCCE-84055F49F9DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FBAF9896-215F-4485-BCCE-84055F49F9DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FBAF9896-215F-4485-BCCE-84055F49F9DC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1D3134F5-BAFC-4DC4-AE27-0AFB5A92FE08}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1D3134F5-BAFC-4DC4-AE27-0AFB5A92FE08}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1D3134F5-BAFC-4DC4-AE27-0AFB5A92FE08}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1D3134F5-BAFC-4DC4-AE27-0AFB5A92FE08}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

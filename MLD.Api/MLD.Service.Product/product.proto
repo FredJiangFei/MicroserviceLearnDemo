@@ -1,0 +1,16 @@
+﻿syntax = "proto3";
+service ProductService{
+	rpc GetProducts(GetProductsRequest) returns (GetProductsReply){}
+}
+
+message GetProductsRequest {}
+
+message GetProductReply {
+	int32 Id = 1;
+	string Sku = 2;
+	int32 Price = 3;
+}
+
+message GetProductsReply {
+	repeated GetProductReply Products = 1;
+}

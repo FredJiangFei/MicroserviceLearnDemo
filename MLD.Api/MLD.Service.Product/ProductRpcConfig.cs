@@ -1,21 +1,21 @@
 ﻿using System;
 using Consul;
 using Grpc.Core;
-using MLD.Service.Order.Services;
+using MLD.Service.Product.Services;
 
-namespace MLD.Service.Order
+namespace MLD.Service.Product
 {
-    public static class OrderRpcConfig
+    public static class ProductRpcConfig
     {
         private static readonly string Address = "127.0.0.1";
-        private static readonly string ApiName = "OrderApi";
-        private static readonly int Port = 40001;
+        private static readonly string ApiName = "ProductApi";
+        private static readonly int Port = 40002;
 
         public static void Start()
         {
             var server = new Server
             {
-                Services = { OrderService.BindService(new OrderServiceImpl()) },
+                Services = { ProductService.BindService(new ProductServiceImpl()) },
                 Ports = { new ServerPort(Address, Port, ServerCredentials.Insecure) }
             };
             server.Start();

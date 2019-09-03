@@ -13,6 +13,7 @@ namespace MLD.Service.Order
 
         public static void Start()
         {
+            Console.Title = ApiName;
             var server = new Server
             {
                 Services = { OrderService.BindService(new OrderServiceImpl()) },
@@ -22,7 +23,7 @@ namespace MLD.Service.Order
 
             ConsulConfig();
 
-            Console.WriteLine($"{ApiName} grpc ServerListening On Port {Port}");
+            Console.WriteLine($"grpc ServerListening On Port {Port}");
             Console.WriteLine("任意键退出...");
             Console.ReadKey();
 

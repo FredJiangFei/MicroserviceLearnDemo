@@ -1,9 +1,3 @@
-using System;
-using System.Linq;
-using System.Net.Http;
-using Consul;
-using Grpc.Core;
-
 namespace MLD.Api.Services
 {
     public static class OrderServiceClient
@@ -12,14 +6,6 @@ namespace MLD.Api.Services
 
         static OrderServiceClient()
         {
-            //var consulClient = new ConsulClient(c => c.Address = new Uri("http://127.0.0.1:8500"));
-            //var services = consulClient.Agent.Services().Result.Response;
-            //var orderService = services.FirstOrDefault(x => x.Value.Service == "OrderApi");
-
-            //var channel = new Channel(
-            //    $"{orderService.Value.Address}:{orderService.Value.Port}", 
-            //    ChannelCredentials.Insecure);
-
             var channel = ServiceClientHelper.GetChannelByApiName("OrderApi");
             Client = new OrderService.OrderServiceClient(channel);
         }

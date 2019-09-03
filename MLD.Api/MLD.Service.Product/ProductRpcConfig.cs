@@ -13,6 +13,8 @@ namespace MLD.Service.Product
 
         public static void Start()
         {
+            Console.Title = ApiName;
+
             var server = new Server
             {
                 Services = { ProductService.BindService(new ProductServiceImpl()) },
@@ -22,7 +24,7 @@ namespace MLD.Service.Product
 
             ConsulConfig();
 
-            Console.WriteLine($"{ApiName} grpc ServerListening On Port {Port}");
+            Console.WriteLine($"grpc ServerListening On Port {Port}");
             Console.WriteLine("任意键退出...");
             Console.ReadKey();
 

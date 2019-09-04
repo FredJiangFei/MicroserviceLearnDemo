@@ -1,11 +1,11 @@
-import { Component, OnInit } from "@angular/core";
-import { OrderService } from "../_services/order.service";
-import { Order } from "../_models/order";
+import { Component, OnInit } from '@angular/core';
+import { OrderService } from '../_services/order.service';
+import { Order } from '../_models/order';
 
 @Component({
-  selector: "app-order",
-  templateUrl: "./order.component.html",
-  styleUrls: ["./order.component.css"]
+  selector: 'app-order',
+  templateUrl: './order.component.html',
+  styleUrls: ['./order.component.css']
 })
 export class OrderComponent implements OnInit {
   orders: Order[];
@@ -33,8 +33,8 @@ export class OrderComponent implements OnInit {
     const orderRequest = {
       details: [
         {
-          sku: "123",
-          name: "iphone6"
+          sku: '123',
+          name: 'iphone6'
         }
       ]
     };

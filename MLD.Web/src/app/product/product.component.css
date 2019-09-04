@@ -1,0 +1,12 @@
+.product-img {
+  display: inline-block;
+}
+
+.product-container {
+  display: flex;
+}
+
+.product-item {
+  margin-bottom: 5px;
+  margin-right: 5px;
+}

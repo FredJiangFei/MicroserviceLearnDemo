@@ -9,6 +9,7 @@ message GetProductReply {
 	int32 Id = 1;
 	string Sku = 2;
 	int32 Price = 3;
+	string Image = 4;
 }
 
 message GetProductsReply {

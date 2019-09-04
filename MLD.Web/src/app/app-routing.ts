@@ -6,7 +6,11 @@ export const routes: Routes = [
     path: '',
     component: HomeComponent,
     children: [
-      { path: 'orders', loadChildren: './order/order.module#OrderModule' }
+      { path: 'orders', loadChildren: './order/order.module#OrderModule' },
+      {
+        path: 'products',
+        loadChildren: './product/product.module#ProductModule'
+      }
     ]
   }
 ];
